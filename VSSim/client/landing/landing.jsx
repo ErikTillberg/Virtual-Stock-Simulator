@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
 export default class Landing extends TrackerReact(React.Component){
+
+  constructor(){
+    super();
+    Meteor.call('getStockPrice', ['AAPL', 86400, 10], function(err, data){
+      console.log(data);
+    });
+  }
+
   render(){
     return (
       <div className = "landing">

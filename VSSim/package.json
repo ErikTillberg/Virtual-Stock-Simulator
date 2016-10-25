@@ -5,6 +5,7 @@
     "start": "meteor run"
   },
   "dependencies": {
+    "csvtojson": "^1.0.3",
     "meteor-node-stubs": "~0.2.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
