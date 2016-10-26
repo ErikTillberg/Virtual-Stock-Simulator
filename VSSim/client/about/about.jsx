@@ -4,6 +4,7 @@ import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
 export default class About extends TrackerReact(React.Component){
 
+
   render(){
     return (
       <div className = "about">
