@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 export default class AccountsUI extends React.Component{
 
   componentDidMount(){
-    this.view = Blaze.render(Template.loginButtons,
+    this.view = Blaze.render(Template.register,
       ReactDOM.findDOMNode(this.refs.container));
   }
 
