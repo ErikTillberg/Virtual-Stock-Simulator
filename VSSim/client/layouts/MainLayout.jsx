@@ -1,6 +1,10 @@
 import React from 'react';
-
+import LogoutB from './LogoutB.jsx';
 import AccountsUI from '../AccountsUI.jsx'
+
+function test(){
+  console.log(Meteor.userId());
+}
 
 export const MainLayout = ({content}) => (
   <div className = "main-layout">
@@ -10,7 +14,7 @@ export const MainLayout = ({content}) => (
         <a href = "/About">About</a>
         <a href = "/Support">Support</a>
         <a href = "/">Home</a>
-        <AccountsUI />
+        <LogoutB />
       </nav>
     </header>
     <main>

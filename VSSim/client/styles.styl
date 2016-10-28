@@ -140,7 +140,6 @@ p
         margin-top 40px
 
 .btn, button
-    display inline-block
     cursor pointer
     background purp
     color #FFF
@@ -150,10 +149,11 @@ p
     border solid 3px purp
     border-radius 2px
     font-weight 800
+    margin-bottom 25px
     shadow-level(1)
     trans()
     &:hover
-        background @background - 20
+        background @background + 50
         border-color @background
         shadow-level(2)
     &.btn-primary

@@ -1,24 +1,29 @@
-Template.register.events({
-  'submit form': function(){
+Template.loginRegisterButton.events({
+  'click .login-confirm': function(){
     event.preventDefault();
     var email = $('[name=email]').val();
     var password = $('[name=password]').val();
-    Accounts.createUser({
-      email: email,
-      password: password
-    });
+
     Meteor.loginWithPassword(email, password);
     FlowRouter.go('/profile');
   },
 
-  'click .logout': function(event){
+  'click .register-confirm': function(){
+
     event.preventDefault();
-    Meteor.logout();
+    var email = $('[name=email1]').val();
+    var password = $('[name=password1]').val();
+
+    Accounts.createUser({
+      email: email,
+      password: password
+    });
+
     FlowRouter.go('/');
   }
 });
 
-Template.register.helpers({
+Template.loginRegisterButton.helpers({
   'currentUser': function(){
     return Meteor.userId();
   }

@@ -2,19 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
+import AccountsUI from '../AccountsUI.jsx';
+
+
 export default class Landing extends TrackerReact(React.Component){
 
   constructor(){
     super();
-    Meteor.call('getStockPrice', ['AAPL', 86400, 10], function(err, data){
-      console.log(data);
-    });
   }
 
   render(){
     return (
       <div className = "landing">
         <h1>Virtual Stock Simulator</h1>
+        <AccountsUI/>
         <div className = "container-fluid">
           <div className = "row row1">
             <div className = "col-xs-6">
