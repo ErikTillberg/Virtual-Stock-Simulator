@@ -9,6 +9,7 @@ export default class Landing extends TrackerReact(React.Component){
 
   constructor(){
     super();
+    Meteor.call('changeStockQuantity', ['go4aH5YWbe2kQBRZv',' goog', 10])
   }
 
   render(){
