@@ -1,5 +1,6 @@
 import React from 'react';
-import LogoutB from './LogoutB.jsx';
+import LogoutButtonContainer from './LogoutB.jsx';
+import NavButtonsContainer from './NavButton.jsx';
 import AccountsUI from '../AccountsUI.jsx'
 
 function test(){
@@ -11,10 +12,10 @@ export const MainLayout = ({content}) => (
     <header>
       <h2>VSSim</h2>
       <nav>
+        <NavButtonsContainer />
         <a href = "/About">About</a>
         <a href = "/Support">Support</a>
-        <a href = "/">Home</a>
-        <LogoutB />
+        <LogoutButtonContainer />
       </nav>
     </header>
     <main>

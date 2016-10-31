@@ -13,7 +13,7 @@ class LogoutButton extends React.Component{
   }
 }
 
-export default LogoutB = createContainer(() => {
+export default LogoutButtonContainer = createContainer(() => {
   return {
     userId: Meteor.userId()
   };

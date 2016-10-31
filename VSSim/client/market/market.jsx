@@ -6,11 +6,25 @@ export default class Market extends TrackerReact(React.Component){
 
   displayGraph(e){
     e.preventDefault();
+
+    //There is currently a major problem in that the google finance api
+    //only returns up to 67 work days of data. This only goes back to ~August,
+    //will likely need to switch API's.
+
+    //Grab the stock symbol from the user input.
+    //TODO add error checking (search db of stock symbols for example)
     var symbol = $('[name=stockSymbol]').val();
     symbol = symbol.toUpperCase();
     if (symbol.length != 4) {console.log("error with symbol");return;}
-    interval = 86400;
-    numDays = 10;
+
+    //Grab the time interval from the user input.
+    intervalObj = document.getElementById("interval");
+    interval = intervalObj.options[intervalObj.selectedIndex].value;
+
+    //Grab the length of time from the user input.
+    lengthObj = document.getElementById("length");
+    numDays = lengthObj.options[lengthObj.selectedIndex].value;
+
     Meteor.call('getStockPrice', [symbol, interval, numDays], function(err, data){
       if (err){
         console.error("Error getting stock info");
@@ -50,6 +64,22 @@ export default class Market extends TrackerReact(React.Component){
 
         <form onSubmit = {this.displayGraph}>
           <p>Find by Stock Symbol: <input type = "text" name = "stockSymbol"/><input type="submit" value="Get Prices"/></p>
+          <p>
+            <select id = "length">
+              <optgroup label="Length of Time">
+                <option value="1">Today</option>
+                <option value="30">This Month</option>
+                <option value='365'>This Year</option>
+              </optgroup>
+            </select>
+            <select id = "interval">
+              <optgroup label="Time Interval">
+                <option value='3600'>Hourly</option>
+                <option value='86400'>Daily</option>
+                <option value='2592000'>Monthly</option>
+              </optgroup>
+            </select>
+          </p>
         </form>
 
         <div id = "stockPrices"></div>

@@ -6,19 +6,9 @@ export default class Profile extends TrackerReact(React.Component){
 
   render(){
     return (
-      <div className = "market">
+      <div className = "profile">
         <h1>Profile</h1>
-        <ul>
-          <li>
-            <a href = "/profile">Profile</a>
-          </li>
-          <li>
-            <a href = "/worldwide">Worldwide</a>
-          </li>
-          <li>
-            <a href = "/market">Market</a>
-          </li>
-        </ul>
+
       </div>
     )
   }

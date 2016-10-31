@@ -4,8 +4,11 @@ Template.loginRegisterButton.events({
     var email = $('[name=email]').val();
     var password = $('[name=password]').val();
 
-    Meteor.loginWithPassword(email, password);
-    FlowRouter.go('/profile');
+    Meteor.loginWithPassword(email, password, function(){
+      if (Meteor.userId()){
+        FlowRouter.go('/profile');
+      }
+    });
   },
 
   'click .register-confirm': function(){
@@ -19,7 +22,11 @@ Template.loginRegisterButton.events({
       password: password
     });
 
-    FlowRouter.go('/');
+    Meteor.loginWithPassword(email, password, function(){
+      if (Meteor.userId()){
+        FlowRouter.go('/profile');
+      }
+    });
   }
 });
 

@@ -11,6 +11,7 @@ import Profile from './profile/profile.jsx';
 
 FlowRouter.route('/', {
   action(){
+    Meteor.logout(); //You should be logged out if you're ever at the root.
     mount(MainLayout, {
       content: (<Landing />)
     })
