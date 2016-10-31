@@ -9,7 +9,7 @@ class LogoutButton extends React.Component{
   }
 
   render(){
-    return this.props.userId ? <a onClick = {this.handleLogout}>Logout</a> : null;
+    return this.props.userId ? <a href = "/" onClick = {this.handleLogout}>Logout</a> : null;
   }
 }
 
