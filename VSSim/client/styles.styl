@@ -111,6 +111,50 @@ header
 p
     color #333
 
+//stuff for the sidenav on the profile page
+.stockPicker
+  margin-top 70px
+  height 100%
+  width 0
+  position fixed
+  z-index 1
+  top 0
+  left 0
+  background-color #111
+  overflow-x hidden
+  padding-top 60px
+  transition 0.5s
+
+
+.stockPicker li
+  padding 8px 8px 8px 8px
+  text-decoration none
+  font-size 25px
+  color #818181
+  display block
+  transition 0.3s
+
+.stockPicker h2
+  margin-top 0
+  margin-left 10px
+
+.stockPicker li:hover
+  color: #f1f1f1
+
+.stockPicker span
+  display inline-block
+.stockPicker .closebtn
+  position absolute
+  top 0
+  right 25px
+  font-size 36px
+  margin-left 50px
+
+.profile
+  text-align center
+  padding 20px
+  transition margin-left 0.3s
+
 .market
   text-align: center
 
@@ -255,25 +299,6 @@ input:-ms-input-placeholder
         border none
         padding 30px
 
-.resolutions
-    list-style none
-    padding 0
-    margin 40px 0
-    lost-center 700px
-    li
-        font-size 2em
-        margin-bottom 8px
-        trans()
-        input
-            margin-right 10px
-        &.checked
-            color #CCC
-        button
-            padding 10px
-            margin-left 40px
-            line-height 0.5
-            float right
-
 .panel-body
     .form-group
         lost-column 1/2
@@ -326,22 +351,12 @@ input:-ms-input-placeholder
             &:hover, &.active
                 border-left 10px solid teal
 
-.completed
-    color #FFF
-    background teal
-    border-radius 5px
-    padding 5px
-    margin-left 20px
-    animation complete 0.6s ease
-    font-size 0.6em
-
 #login-dropdown-list
     right -1px
     left auto
 
 #login-sign-in-link, #login-name-link
     margin-left: 30px
-
 
 @keyframes complete
     0%
@@ -350,14 +365,6 @@ input:-ms-input-placeholder
     100%
         opacity 1
         transform translate3d(0, 0,0)
-
-.resolutionLoad-enter
-    opacity: 0
-    animation: slideIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)
-
-.resolutionLoad-leave
-    animation: slideOut 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)
-    opacity: 1.0
 
 @keyframes slideIn
     0%
