@@ -25,12 +25,14 @@ export default class Market extends TrackerReact(React.Component){
     lengthObj = document.getElementById("length");
     numDays = lengthObj.options[lengthObj.selectedIndex].value;
 
+    //Meteor method call.
     Meteor.call('getStockPrice', [symbol, interval, numDays], function(err, data){
       if (err){
         console.error("Error getting stock info");
       } else {
-        //console.log(data)
-
+        //The returned data contains a unix time stamp for the first date,
+        //and then an integer for each successive time (e.g. a510543535, 1, 2, 3 ...)
+        //The following parses the data.
         var dates = [];
         var prices = [];
         initTime = data[0].d;
@@ -43,15 +45,13 @@ export default class Market extends TrackerReact(React.Component){
           prices.push(current.c)
         }
 
-        var trace1 = {
+        var stockData = {
           x: dates,
           y: prices,
           type: 'scatter'
         };
 
-        var data = [trace1];
-
-        Plotly.newPlot('stockPrices', data);
+        Plotly.newPlot('stockPrices', [stockData]);
 
       }
     });
