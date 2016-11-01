@@ -8,7 +8,8 @@ export default class Market extends TrackerReact(React.Component){
 
   constructor(){
     super();
-    this.state = {stockSymbol: ""};
+    this.state = {stockSymbol: "", user: Meteor.user()};
+    console.log(Meteor.user())
   }
 
   displayGraph(e){
@@ -70,7 +71,8 @@ export default class Market extends TrackerReact(React.Component){
   }
 
   render(){
-    let stockSymbol = this.state.stockSymbol
+    let stockSymbol = this.state.stockSymbol;
+    let userN = this.state.user;
     return (
       <div className = "market">
         <h1>Marketplace</h1>
@@ -95,7 +97,7 @@ export default class Market extends TrackerReact(React.Component){
           </p>
         </form>
 
-        <Purchase stockSymbol = {stockSymbol} />
+        <Purchase stockSymbol = {stockSymbol} user = {userN} />
 
         <div id = "stockPrices"></div>
       </div>

@@ -24,6 +24,16 @@ Template.loginRegisterButton.events({
 
     Meteor.loginWithPassword(email, password, function(){
       if (Meteor.userId()){
+        //on registration, put this much money in the persons wallet:
+
+        Meteor.users.update({_id: Meteor.userId()},
+        {
+          $set:
+            {
+              'profile.wallet': 10000 //start with $10000 USD
+            }
+        });
+
         FlowRouter.go('/profile');
       }
     });

@@ -7,7 +7,8 @@ import Landing from './landing/landing.jsx';
 import About from './about/about.jsx';
 import Market from './market/market.jsx';
 import Profile from './profile/profile.jsx';
-
+import Worldwide from './worldwide/worldwide.jsx';
+import Support from './support/support.jsx';
 
 FlowRouter.route('/', {
   action(){
@@ -38,6 +39,22 @@ FlowRouter.route('/profile',{
   action(){
     mount(MainLayout, {
       content: (<Profile />)
+    })
+  }
+});
+
+FlowRouter.route('/worldwide', {
+  action(){
+    mount(MainLayout,{
+      content:(<Worldwide />)
+    })
+  }
+});
+
+FlowRouter.route('/support', {
+  action(){
+    mount(MainLayout,{
+      content:(<Support />)
     })
   }
 });

@@ -9,6 +9,13 @@ Meteor.startup(() => {
   console.log('Starting server...');
 });
 
+//let's client call update methods on a user
+Meteor.users.allow({
+  update: function(userId, user){
+    return true;
+  }
+});
+
 Meteor.methods({
 
   getStockHistoricalPrice(data){
