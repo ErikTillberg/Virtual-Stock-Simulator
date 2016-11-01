@@ -9,7 +9,11 @@ export default class Market extends TrackerReact(React.Component){
   constructor(){
     super();
     this.state = {stockSymbol: "", user: Meteor.user()};
-    console.log(Meteor.user())
+    //setTimeout(function(){ alert("Hello"); }, 3000);
+    var self = this;
+    setTimeout(function(){
+      self.setState({user: Meteor.user()})
+    }, 1000);
   }
 
   displayGraph(e){

@@ -18,8 +18,9 @@ export default class Purchase extends TrackerReact(React.Component){
                 <h3 className = "modal-title">Purchase {this.props.stockSymbol}</h3>
               </div>
               <div className = "modal-body">
-                <h2>Cash on Hand: $10000</h2>
+                <h2>Cash on Hand: ${this.props.user? this.props.user.profile.wallet: 0}</h2>
                 <form className="purchaseForm">
+                    <p><input id="intNumber" type="number" min="1" max="20" /></p>
                     <p><button data-dismiss = "modal" type = "submit" className = 'purchase-confirm btn'>Confirm Purchase</button></p>
                 </form>
               </div>
