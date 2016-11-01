@@ -2,7 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
+import Purchase from '../purchase/purchase.jsx';
+
 export default class Market extends TrackerReact(React.Component){
+
+  constructor(){
+    super();
+    this.state = {stockSymbol: ""};
+  }
 
   displayGraph(e){
     e.preventDefault();
@@ -16,7 +23,7 @@ export default class Market extends TrackerReact(React.Component){
     var symbol = $('[name=stockSymbol]').val();
     symbol = symbol.toUpperCase();
     if (symbol.length != 4) {console.log("error with symbol");return;}
-
+    this.setState({stockSymbol: symbol});
     //Grab the time interval from the user input.
     intervalObj = document.getElementById("interval");
     interval = intervalObj.options[intervalObj.selectedIndex].value;
@@ -63,11 +70,12 @@ export default class Market extends TrackerReact(React.Component){
   }
 
   render(){
+    let stockSymbol = this.state.stockSymbol
     return (
       <div className = "market">
         <h1>Marketplace</h1>
 
-        <form onSubmit = {this.displayGraph}>
+        <form onSubmit = {this.displayGraph.bind(this)}>
           <p>Find by Stock Symbol: <input type = "text" name = "stockSymbol"/><input type="submit" value="Get Prices"/></p>
           <p>
             <select id = "length">
@@ -87,8 +95,9 @@ export default class Market extends TrackerReact(React.Component){
           </p>
         </form>
 
-        <div id = "stockPrices"></div>
+        <Purchase stockSymbol = {stockSymbol} />
 
+        <div id = "stockPrices"></div>
       </div>
     )
   }
