@@ -106,14 +106,51 @@ header
                 margin-left: 15px
             &:hover
                 border-color teal
-
+                text-decoration none
+            &:visited
+              text-decoration none
+              color: #FFF
 
 p
     color #333
 
-//stuff for the sidenav on the profile page
+//stuff for the tabs on profile pages
+ul.tab
+  list-style-type: none
+  margin 0
+  padding 0
+  overflow hidden
+  border 1px solid #ccc
+  background-color #f1f1f1
+
+ul.tab li
+  float left
+
+ul.tab li a
+  display inline-block
+  color black
+  text-align center
+  padding 14px 16px
+  text-decoration none
+  transition 0.3s
+  font-size 17px
+
+ul.tab li a:hover
+  background-color #ddd
+
+ul.tab li a:focus, .active
+  background-color #ccc
+
+.tabcontent
+  display none;
+  height 100%
+  padding 6px 12px
+  border 1px solid #ccc
+  border-top none
+
+//stuff for the sidenav on the profile-home page
 .stockPicker
-  margin-top 70px
+  margin-top 135px
   height 100%
   width 0
   position fixed
@@ -139,7 +176,8 @@ p
   margin-left 10px
 
 .stockPicker li:hover
-  color: #f1f1f1
+  color #f1f1f1
+  cursor pointer
 
 .stockPicker span
   display inline-block
@@ -152,7 +190,7 @@ p
 
 .profile
   text-align center
-  padding 20px
+  padding 0px 20px 20px 20px
   transition margin-left 0.3s
 
 .market
@@ -193,7 +231,6 @@ p
     background purp
     color #FFF
     text-decoration none
-    text-transform uppercase
     padding 5px 15px
     border solid 3px purp
     border-radius 2px
@@ -274,30 +311,6 @@ input::-moz-placeholder
     color: #ddd
 input:-ms-input-placeholder
     color: #ddd
-
-.new-resolution
-    transition all 0.3s cubic-bezier(0.86, 0, 0.07, 1)
-    shadow-level(3)
-    &:hover
-        shadow-level(5)
-    label
-        background dark-purp
-        text-transform uppercase
-        font-weight 800
-        color #FFF
-        font-size 1.2em
-        padding 10px
-        display block
-        text-align center
-        letter-spacing 2px
-    input
-        width 100%
-        margin 0
-        font-size 2em
-        font-weight 800
-        color #333
-        border none
-        padding 30px
 
 .panel-body
     .form-group
