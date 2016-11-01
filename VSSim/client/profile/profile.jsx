@@ -56,6 +56,27 @@ export default class Profile extends TrackerReact(React.Component){
           <p>Home.</p>
         </div>
 
+        <div id = "stockPickerId" className = "stockPicker">
+          <a href = "javascript:void(0)" className = "closebtn" onClick = {this.closeNav}>&times;</a>
+          <h2>Your Stocks</h2>
+          <ul id = "stockList">
+            <li>GOOG</li>
+            <li>TSLA</li>
+            <li>MSFT</li>
+            <li>DOWJ</li>
+          </ul>
+          <h2>Tracked Stocks</h2>
+          <ul id = "stockList">
+            <li>GOOG</li>
+            <li>TSLA</li>
+            <li>MSFT</li>
+            <li>DOWJ</li>
+            <li>TSLA</li>
+            <li>MSFT</li>
+            <li>DOWJ</li>
+          </ul>
+        </div>
+
         <div id = "profileStocks" className = "tabcontent">
           <div id = "profileID" className = "profile">
             <h1>Profile</h1>
@@ -65,26 +86,7 @@ export default class Profile extends TrackerReact(React.Component){
             </p>
           </div>
 
-          <div id = "stockPickerId" className = "stockPicker">
-            <h2>Your Stocks</h2>
-            <a href = "javascript:void(0)" className = "closebtn" onClick = {this.closeNav}>&times;</a>
-            <ul id = "stockList">
-              <li>GOOG</li>
-              <li>TSLA</li>
-              <li>MSFT</li>
-              <li>DOWJ</li>
-            </ul>
-            <h2>Tracked Stocks</h2>
-              <ul id = "stockList">
-                <li>GOOG</li>
-                <li>TSLA</li>
-                <li>MSFT</li>
-                <li>DOWJ</li>
-                <li>TSLA</li>
-                <li>MSFT</li>
-                <li>DOWJ</li>
-              </ul>
-          </div>
+
         </div>
 
         <div id = "profileAnalytics" className = "tabcontent">
