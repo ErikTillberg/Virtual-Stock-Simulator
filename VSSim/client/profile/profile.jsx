@@ -31,11 +31,13 @@ export default class Profile extends TrackerReact(React.Component){
   }
 
   openNav(){
+    document.getElementById("closebtnId").style.marginLeft = "210px";
     document.getElementById("stockPickerId").style.width = "250px";
     document.getElementById("profileID").style.marginLeft = "250px";
   }
 
   closeNav(){
+    document.getElementById("closebtnId").style.marginLeft = "-30px";
     document.getElementById("stockPickerId").style.width = "0";
     document.getElementById("profileID").style.marginLeft = "0";
   }
@@ -57,7 +59,7 @@ export default class Profile extends TrackerReact(React.Component){
         </div>
 
         <div id = "stockPickerId" className = "stockPicker">
-          <a href = "javascript:void(0)" className = "closebtn" onClick = {this.closeNav}>&times;</a>
+          <a id = "closebtnId" href = "javascript:void(0)" className = "closebtn" onClick = {this.closeNav}>&times;</a>
           <h2>Your Stocks</h2>
           <ul id = "stockList">
             <li>GOOG</li>
