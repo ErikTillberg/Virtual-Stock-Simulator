@@ -9,6 +9,13 @@ import Market from './market/market.jsx';
 import Profile from './profile/profile.jsx';
 import Worldwide from './worldwide/worldwide.jsx';
 import Support from './support/support.jsx';
+import Error404 from './404/404.jsx';
+
+FlowRouter.notFound = {
+  action(){
+    FlowRouter.go('/404');
+  }
+}
 
 FlowRouter.route('/', {
   action(){
@@ -18,6 +25,14 @@ FlowRouter.route('/', {
     })
   }
 });
+
+FlowRouter.route('/404', {
+  action(){
+    mount(MainLayout, {
+      content: (<Error404 />)
+    })
+  }
+})
 
 FlowRouter.route('/about', {
   action(){
@@ -29,25 +44,39 @@ FlowRouter.route('/about', {
 
 FlowRouter.route('/market', {
   action(){
-    mount(MainLayout, {
-      content: (<Market />)
-    })
+    if (Meteor.userId()){
+      mount(MainLayout, {
+        content: (<Market />)
+      })
+    } else {
+      FlowRouter.go('/');
+    }
   }
 });
 
 FlowRouter.route('/profile',{
   action(){
-    mount(MainLayout, {
-      content: (<Profile />)
-    })
+    if (Meteor.userId()){
+      mount(MainLayout, {
+        content: (<Profile />)
+      })
+    } else {
+      FlowRouter.go('/');
+    }
+
   }
 });
 
 FlowRouter.route('/worldwide', {
   action(){
-    mount(MainLayout,{
-      content:(<Worldwide />)
-    })
+    if (Meteor.userId()){
+      mount(MainLayout,{
+        content:(<Worldwide />)
+      })
+    } else {
+      FlowRouter.go('/');
+    }
+
   }
 });
 
