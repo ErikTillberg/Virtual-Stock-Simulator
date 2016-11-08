@@ -31,7 +31,7 @@ Meteor.methods({
   //This method will change the quantity of stock a person owns, send the
   //userId, the stock the person wants, and the amount the person wants to change
   //(e.g. -5 to sell 5 stocks, 15 to buy 15 stocks)
-  changeStockQuantity(input){
+  purchaseStock(input){
 
     var userId = input[0];
     var stockSymbol = input[1];
@@ -40,16 +40,36 @@ Meteor.methods({
     //.fetch() returns the actual JSON, whereas .find() returns a cursor.
     var user = Meteor.users.find({_id: userId}).fetch();
 
+    /*
+      Rough stock schema:
+      [{
+        stockSymbol : String
+        count : Integer
+        lastCost : Decimal
+        history: {
+          [
+            time: new Date()
+            priceWhenBought: Decimal
+            quantity: Integer
+          ]
+        }
+      }]
+
+    */
+
     if (user.length){ //if user exists add stock to tracked stocks
+      var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
+      console.log('stock price: ', stockPrice);
+
       var loc = 'stocksOwned.'+stockSymbol; //because you can't do this in the query :(
-      Meteor.users.update(
-        //push the stock symbol to the database.
-        {_id: userId},
-        { $inc:
-          {
-            loc: change
-          }
-        });
+      // Meteor.users.update(
+      //   //push the stock symbol to the database.
+      //   {_id: userId},
+      //   { $inc:
+      //     {
+      //       loc: change
+      //     }
+      //   });
     } else {
       console.error("Could not find user " + userId);
       return;
