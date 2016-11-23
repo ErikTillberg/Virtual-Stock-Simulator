@@ -33,13 +33,11 @@ Meteor.methods({
   //(e.g. -5 to sell 5 stocks, 15 to buy 15 stocks)
   purchaseStock(input){
 
-    var userId = input[0];
-    var stockSymbol = input[1];
-    var change = input[2];
-
-    //.fetch() returns the actual JSON, whereas .find() returns a cursor.
-    var user = Meteor.users.find({_id: userId}).fetch();
-
+    var stockSymbol = input[0];
+    var change = input[1];
+    console.log("Purchasing stock for " + Meteor.user()._id)
+    var user = Meteor.user();
+    if(!user) {return;}
     /*
       Rough stock schema:
       [{
@@ -56,28 +54,41 @@ Meteor.methods({
       }]
 
     */
+    console.log('Getting stock price');
+    //if user exists add stock to tracked stocks
+    var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
+    console.log('stock price: '+ stockPrice);
+    if (stockPrice === 'error'){return 'error'}
 
-    if (user.length){ //if user exists add stock to tracked stocks
-      var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
-      console.log('stock price: ', stockPrice);
-
-      var loc = 'stocksOwned.'+stockSymbol; //because you can't do this in the query :(
-      // Meteor.users.update(
-      //   //push the stock symbol to the database.
-      //   {_id: userId},
-      //   { $inc:
-      //     {
-      //       loc: change
-      //     }
-      //   });
-    } else {
-      console.error("Could not find user " + userId);
-      return;
+    var stocksOwned = user.stocksOwned;
+    var currCount = stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count
+    stocksOwned[stockSymbol] = {
+      count: currCount + change,
+      lastCost: stockPrice
     }
 
-    var user = Meteor.users.find({_id: userId}).fetch();
-    console.log(user);
+    Meteor.users.update(
+        {_id: Meteor.user()._id},
+        { $set:
+          {
+            stocksOwned
+          }
+        }, function(error){
+          console.log(error);
+        }
+    );
+
+    //  Meteor.users.update(
+    //    //increment the stock info you own.
+    //     {_id: userId},
+    //     { $inc:
+    //       {
+    //         loc: {
+    //           count: this.count+change,
+    //           lastCost: stockPrice,
+    //         }
+    //       }
+    //     });
 
   }
-
 });

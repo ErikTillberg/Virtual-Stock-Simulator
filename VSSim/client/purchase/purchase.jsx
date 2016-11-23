@@ -7,7 +7,7 @@ export default class Purchase extends TrackerReact(React.Component){
   purchaseStock(){
     var num = document.getElementById('intNumber').value;
     console.log(this.props.stockSymbol, num);
-    Meteor.call('purchaseStock', [this.props.user._id, 'GOOG', 2]);
+    Meteor.call('purchaseStock', [this.props.stockSymbol, num]);
   }
 
   render(){
@@ -25,10 +25,10 @@ export default class Purchase extends TrackerReact(React.Component){
               </div>
               <div className = "modal-body">
                 <h2>Cash on Hand: ${this.props.user? this.props.user.profile.wallet: 0}</h2>
-                <form className="purchaseForm">
+                <div className="purchaseForm">
                     <p><input id="intNumber" type="number" min="1" max="20" /></p>
                     <p><button data-dismiss = "modal" type = "submit" className = 'purchase-confirm btn' onClick = {this.purchaseStock.bind(this)}>Confirm Purchase</button></p>
-                </form>
+                </div>
               </div>
             </div>
           </div>
