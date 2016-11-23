@@ -30,7 +30,7 @@ Template.loginRegisterButton.events({
         {
           $set:
             {
-              'profile.wallet': 10000, //start with $10000 USD7
+              'cashOnHand': 10000, //start with $10000 USD7
               'stocksOwned': {}
             }
         });
