@@ -42,7 +42,9 @@ Meteor.methods({
         for (var i = 0; i < 7; i++){ data.shift(); }
         data.unshift('d,o,h,l,c,v');
         data = data.join('\n');
-
+        if (data === 'd,o,h,l,c,v'){
+          return "error";
+        }
           //convert the csv to json :)
           var converter = new Converter({});
           converter.fromString(data, function(err, result){

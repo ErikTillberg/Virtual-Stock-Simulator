@@ -10,7 +10,7 @@ function test(){
 export const MainLayout = ({content}) => (
   <div className = "main-layout">
     <header>
-      <img style = {{width: '100px', height: 'auto'}} src={'../../images/logo.jpg'}/>
+      <a className = "logo-text" href = "/">VSSim</a>
       <nav>
         <NavButtonsContainer />
         <a href = "/About">About</a>
