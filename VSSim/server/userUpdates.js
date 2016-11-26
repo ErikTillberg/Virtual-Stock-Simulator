@@ -35,7 +35,9 @@ Meteor.methods({
 
     var stockSymbol = input[0];
     var change = parseInt(input[1]);
-    console.log("Purchasing stock for " + Meteor.user()._id)
+    if (isNaN(change)){
+      return;
+    }
     var user = Meteor.user();
     if(!user) {return;}
     /*

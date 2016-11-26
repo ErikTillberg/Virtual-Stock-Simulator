@@ -4,12 +4,26 @@ import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
 export default class Profile extends TrackerReact(React.Component){
 
+  componentWillUpdate(){
+    if (this.state.user != Meteor.user()){
+        this.setState({user: Meteor.user()})
+    }
+  }
+
   constructor(){
     super();
+    this.state = {
+      user: Meteor.user()
+    }
+  }
+
+  componentWillMount(){
+    this.setState({user: Meteor.user()});
   }
 
   componentDidMount(){
     document.getElementById("defaultOpen").click();
+    this.setState({user: Meteor.user()});
   }
 
   openPage(evt, pageName){
@@ -43,6 +57,7 @@ export default class Profile extends TrackerReact(React.Component){
   }
 
   render(){
+
     return (
 
       <div>
@@ -55,7 +70,7 @@ export default class Profile extends TrackerReact(React.Component){
 
 
         <div id = "profileHome" className = "tabcontent">
-          <p>Home.</p>
+          <h2>{this.state.user? this.state.user.emails[0].address : 'Loading'} Profile</h2>
         </div>
 
         <div id = "stockPickerId" className = "stockPicker">
@@ -98,5 +113,4 @@ export default class Profile extends TrackerReact(React.Component){
       </div>
     )
   }
-
 }
