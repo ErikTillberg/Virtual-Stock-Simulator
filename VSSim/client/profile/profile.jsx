@@ -176,17 +176,26 @@ export default class Profile extends TrackerReact(React.Component){
           <li><a href = "javascript:void(0)" className = "tablinks" onClick={()=>this.openPage(event, 'profileStocks')}>Stocks</a></li>
           <li><a href = "javascript:void(0)" className = "tablinks" onClick={()=>this.openPage(event, 'profileAnalytics')}>Analytics</a></li>
         </ul>
-
+        
         <div id = "profileHome" className = "tabcontent container">
           <div className = "row">
-            <h2 className = "profileTitle">{this.state.user? this.state.user.emails[0].address : 'Loading'} Profile</h2>
+            <h2 className = "profileTitle">{this.state.user? this.state.user.username : 'Loading'} Profile</h2>
           </div>
-          <div className = "row profileInfo">
-            <div className = "col-xs-2"><h4>User Information</h4></div>
-            <div className = "col-xs-8">
-              <h4>Cash: {this.state.user? this.state.user.cashOnHand.toFixed(2) : 'Loading'}</h4>
-              <h4>Stock Value: {this.state.user? this.calculateStockValue().toFixed(2) : 'Loading'}</h4>
-              <h4>Networth: {this.state.user? this.calculateNetworth().toFixed(2) : 'Loading'}</h4>
+          <div className = "profileInfo">
+            <div className="row">
+              <div className = "col-xs-2"><h4>Account Information</h4></div>
+              <div className = "col-xs-8">
+                <h4>User Name: {this.state.user? this.state.user.username : 'Loading'}</h4>
+                <h4>Email: {this.state.user? this.state.user.emails[0].address : 'Loading'}</h4>
+              </div>
+            </div>
+            <div className="row">
+              <div className = "col-xs-2"><h4>User Information</h4></div>
+              <div className = "col-xs-8">
+                <h4>Cash: {this.state.user? this.state.user.cashOnHand.toFixed(2) : 'Loading'}</h4>
+                <h4>Stock Value: {this.state.user? this.calculateStockValue().toFixed(2) : 'Loading'}</h4>
+                <h4>Networth: {this.state.user? this.calculateNetworth().toFixed(2) : 'Loading'}</h4>
+              </div>
             </div>
             <div className = "col-xs-2"></div>
           </div>
@@ -248,3 +257,7 @@ export default class Profile extends TrackerReact(React.Component){
     )
   }
 }
+
+
+
+
