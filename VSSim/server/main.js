@@ -8,7 +8,7 @@ var Converter = require("csvtojson").Converter;
 Meteor.startup(() => {
   console.log('Starting server...');
   Meteor.publish(null, function() {
-    return Meteor.users.find({_id: this.userId}, {fields: {stocksOwned: 1, cashOnHand: 1,username: 1}});
+    return Meteor.users.find({_id: this.userId}, {fields: {trackedStocks: 1, stocksOwned: 1, cashOnHand: 1,username: 1}});
   });
   Meteor.call('updateStockValues');
   Meteor.setInterval(function(){

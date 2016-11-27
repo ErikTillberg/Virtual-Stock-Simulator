@@ -7,24 +7,34 @@ Meteor.methods({
   //method takes a user ID and a stock symbol and updates the user entry
   //in the db to contian that stock symbol.
   addStockAsTracked(input){
-
-    var userId = input[0];
-    var stockSymbol = input[1];
+    var stockSymbol = input[0];
 
     //.fetch() returns the actual JSON, whereas .find() returns a cursor.
-    var user = Meteor.users.find({_id: userId}).fetch();
+    var user = Meteor.user();
 
-    if (user.length){ //if user exists add stock to tracked stocks
+    var tracked = user.trackedStocks;
+
+    if (!stockSymbol){console.error("Cannot track that"); return;}
+
+    if (tracked.indexOf(stockSymbol)>=0){
+      console.error("Already tracking that");
+      return;
+    }
+
+    if (user){ //if user exists add stock to tracked stocks
       Meteor.users.update(
         //push the stock symbol to the database.
-        {_id: userId},
+        {_id: user._id},
         { $push:
         {
           trackedStocks: stockSymbol
-        }}
-      );
+        }
+      }
+    ), function(error){
+        console.error(error);
+    };
     } else {
-      console.error("Could not find user " + userId);
+      console.error("Could not find user " + user._id);
       return;
     }
   },
@@ -61,6 +71,14 @@ Meteor.methods({
     //if user exists add stock to tracked stocks
     var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
     console.log(stockPrice);
+
+    var tracked = user.trackedStocks;
+    //Remove the stock from tracked if it's in there.
+    var indexOfTracked = tracked.indexOf(stockSymbol);
+    if (indexOfTracked >= 0){
+      tracked.splice(indexOfTracked, 1);
+    }
+
     // validates stock symbol
     if (stockPrice){
         console.log('stock price: '+ stockPrice);
@@ -88,7 +106,8 @@ Meteor.methods({
             { $set:
             {
               stocksOwned,
-              cashOnHand: cashOnHandUpdate
+              cashOnHand: cashOnHandUpdate,
+              trackedStocks: tracked
             }
           }, function(error){
             if (error){

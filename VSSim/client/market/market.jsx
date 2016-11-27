@@ -37,6 +37,8 @@ export default class Market extends TrackerReact(React.Component){
     lengthObj = document.getElementById("length");
     numDays = lengthObj.options[lengthObj.selectedIndex].value;
 
+    var lastPrice;
+    var self = this;
     //Meteor method call.
     Meteor.call('getStockHistoricalPrice', [symbol, interval, numDays], function(err, data){
       if (err){
@@ -79,17 +81,23 @@ export default class Market extends TrackerReact(React.Component){
           dates.push(date);
           prices.push(current.c)
         }
-
+        self.setState({latestPrice: prices[prices.length-1]});
+        console.log(prices[prices.length-1]);
         var stockData = {
+
           x: dates,
           y: prices,
           type: 'scatter'
         };
-
         Plotly.newPlot('stockPrices', [stockData]);
-
       }
     });
+
+  }
+
+  trackStock(symbol){
+    console.log('relinquishing control to server to track');
+    Meteor.call('addStockAsTracked', [symbol]);
   }
 
   render(){
@@ -119,7 +127,29 @@ export default class Market extends TrackerReact(React.Component){
           </p>
         </form>
 
-        {stockSymbol&&userN?<Purchase stockSymbol = {stockSymbol} user = {userN} /> : ""}
+        <div className = "row">
+
+          <div className = "col-xs-2"></div>
+          <div className = "col-xs-8">
+
+            {stockSymbol&&userN?
+              <div className = "row">
+                <div className = "col-xs-4">
+                  <Purchase className = "" stockSymbol = {stockSymbol} user = {userN} currentValue = {this.state.latestPrice}/>
+                </div>
+                <div className = "col-xs-4">
+                  <h3>{stockSymbol}</h3>
+                </div>
+                <div className = "col-xs-4">
+                  <button onClick = {()=>this.trackStock(stockSymbol)}className = "btn" type = "button">Track this Stock</button>
+                </div>
+              </div>
+               : ""}
+
+          </div>
+          <div className = "col-xs-2"></div>
+
+        </div>
 
         <div id = "stockPrices"></div>
       </div>
