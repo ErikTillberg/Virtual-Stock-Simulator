@@ -95,5 +95,44 @@ Meteor.methods({
     //This is required because otherwise you cannot return things from
     //async methods.
     return myFuture.wait();
+  },
+
+  getAllUsers(){
+    //rank, name, networth
+    var users =  Meteor.users.find({}, {fields: {username:1, stocksOwned:1, cashOnHand: 1}}).fetch();
+    console.log(users);
+
+    var ranking = [];
+
+    // generate list of all users
+    for (var i = 0; i < users.length; i++)
+    {
+      console.log(users[i]);
+
+      // stock value
+      var stockVal = 0;
+      for (var stock in users[i].stocksOwned){
+        stockVal += users[i].stocksOwned[stock].count * users[i].stocksOwned[stock].currentValue;
+      }
+
+      var usr = {
+        name: users[i].username,
+        networth: stockVal + users[i].cashOnHand
+
+      };
+      ranking.push(usr);
+    }
+
+    // apply ranking
+    ranking = _.sortBy(ranking, 'networth').reverse();
+    for (var i = 1; i <= ranking.length ; i++ ){
+      ranking[i-1]['rank'] =  i;
+
+    }
+
+
+    return ranking;
+
   }
+
 });
