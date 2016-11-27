@@ -35,6 +35,7 @@ Meteor.methods({
 
     var stockSymbol = input[0];
     var change = parseInt(input[1]);
+
     if (isNaN(change)){
       return;
     }
@@ -59,36 +60,40 @@ Meteor.methods({
     console.log('Getting stock price');
     //if user exists add stock to tracked stocks
     var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
-    console.log('stock price: '+ stockPrice);
-    if (stockPrice === 'error'){return 'error'}
 
-    var cashOnHandUpdate = user.cashOnHand;
-    var stocksOwned = user.stocksOwned;
+    // validates stock symbol
+    if (stockPrice){
+      console.log('stock price: '+ stockPrice);
+      if (stockPrice === 'error'){return 'error'}
 
-    var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
+      var cashOnHandUpdate = user.cashOnHand;
+      var stocksOwned = user.stocksOwned;
 
-    cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
+      var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
 
-    if (cashOnHandUpdate < 0){
-      return "Not enough cash to purchase that many";
-    }
+      cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
 
-    stocksOwned[stockSymbol] = {
-      count: currCount + change,
-      lastCost: stockPrice
-    }
+      if (cashOnHandUpdate < 0){
+        return "Not enough cash to purchase that many";
+      }
 
-    Meteor.users.update(
-        {_id: Meteor.user()._id},
-        { $set:
+      stocksOwned[stockSymbol] = {
+        count: currCount + change,
+        lastCost: stockPrice
+      }
+
+      Meteor.users.update(
+          {_id: Meteor.user()._id},
+          { $set:
           {
             stocksOwned,
             cashOnHand: cashOnHandUpdate
           }
-        }, function(error){
-          console.log(error);
-        }
-    );
-    return "Successful purchase of " + change + " " + stockSymbol + " stocks";
+          }, function(error){
+            console.log(error);
+          }
+      );
+      return "Successful purchase of " + change + " " + stockSymbol + " stocks";
+    }
   }
 });
