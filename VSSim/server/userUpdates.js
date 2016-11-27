@@ -35,6 +35,7 @@ Meteor.methods({
 
     var stockSymbol = input[0];
     var change = parseInt(input[1]);
+
     if (isNaN(change)){
       return;
     }
@@ -59,38 +60,44 @@ Meteor.methods({
     console.log('Getting stock price');
     //if user exists add stock to tracked stocks
     var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
-    console.log('stock price: '+ stockPrice);
-    if (stockPrice === 'error'){return 'error'}
+    console.log(stockPrice);
+    // validates stock symbol
+    if (stockPrice){
+        console.log('stock price: '+ stockPrice);
+        if (stockPrice === 'error'){return 'error'}
 
-    var cashOnHandUpdate = user.cashOnHand;
-    var stocksOwned = user.stocksOwned;
+        var cashOnHandUpdate = user.cashOnHand;
+        var stocksOwned = user.stocksOwned;
 
-    var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
+        var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
 
-    cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
+        cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
 
-    if (cashOnHandUpdate < 0){
-      return "Not enough cash to purchase that many";
-    }
-
-    stocksOwned[stockSymbol] = {
-      count: currCount + change,
-      costAtPurchase: stockPrice,
-      currentValue: stockPrice
-    }
-
-    Meteor.users.update(
-        {_id: Meteor.user()._id},
-        { $set:
-          {
-            stocksOwned,
-            cashOnHand: cashOnHandUpdate
-          }
-        }, function(error){
-          console.log(error);
+        stocksOwned[stockSymbol] = {
+          count: currCount + change,
+          costAtPurchase: stockPrice,
+          currentValue: stockPrice
         }
-    );
-    return "Successful purchase of " + change + " " + stockSymbol + " stocks";
+
+        if (cashOnHandUpdate < 0){
+          return "Not enough cash to purchase that many";
+        }
+
+        Meteor.users.update(
+            {_id: Meteor.user()._id},
+            { $set:
+            {
+              stocksOwned,
+              cashOnHand: cashOnHandUpdate
+            }
+          }, function(error){
+            if (error){
+              console.log(error);
+            }
+          }
+      );
+      return "Successful purchase of " + change + " " + stockSymbol + " stocks";
+    }
   },
 
   sellStock(input){

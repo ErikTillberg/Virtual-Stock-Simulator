@@ -167,8 +167,6 @@ export default class Profile extends TrackerReact(React.Component){
       }
     });
 
-    this.stockPrice();
-
   }
 
   stockPrice(){
