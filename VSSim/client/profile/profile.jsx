@@ -189,7 +189,7 @@ export default class Profile extends TrackerReact(React.Component){
 
         <div id = "profileHome" className = "tabcontent container">
           <div className = "row">
-            <h2 className = "profileTitle">{this.state.user? this.state.user.emails[0].address : 'Loading'} Profile</h2>
+            <h2 className = "profileTitle">{this.state.user? this.state.user.username : 'Loading'}&#8217;s Profile</h2>
           </div>
           <div className = "row profileInfo">
             <div className = "col-xs-2"><h4>User Information</h4></div>
@@ -238,7 +238,7 @@ export default class Profile extends TrackerReact(React.Component){
 
         <div id = "profileStocks" className = "tabcontent">
           <div id = "profileID" className = "profile">
-            <h1>{this.state.user? this.state.user.emails[0].address : 'Loading'} Stocks</h1>
+            <h1>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h1>
             <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
 
             <h3>{this.state.stockPicked}</h3>
