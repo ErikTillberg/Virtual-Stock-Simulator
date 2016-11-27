@@ -41,6 +41,10 @@ export default class Profile extends TrackerReact(React.Component){
     document.getElementById(pageName).style.display = "block";
     evt.currentTarget.className += " active";
 
+    if (pageName === 'profileStocks'){
+       this.setState({stockPicked: this.firstStock()})
+    }
+
   }
 
   calculateStockValue(){
@@ -86,8 +90,84 @@ export default class Profile extends TrackerReact(React.Component){
     return ret;
   }
 
-  render(){
+  firstStock(){
+    var owned = this.state.user.stocksOwned;
 
+    if (owned == {}){
+      return '';
+    }
+
+    for (var key in owned){
+      return key;
+    }
+  }
+
+  displayGraph(symbolInput){
+    this.setState({stockPicked: symbolInput});
+    //Grab the stock symbol from the user input.
+    //TODO add error checking (search db of stock symbols for example)
+    if (symbolInput === ''){return;}
+    var symbol = symbolInput;
+    symbol = symbol.toUpperCase();
+
+    interval = 3600*24
+
+    numDays = 80
+
+    //Meteor method call.
+    Meteor.call('getStockHistoricalPrice', [symbol, interval, numDays], function(err, data){
+      if (err){
+        console.error("Error getting stock info");
+      } else {
+        //The returned data contains a unix time stamp for the first date,
+        //and then an integer for each successive time (e.g. a510543535, 1, 2, 3 ...)
+        //The following parses the data.
+        var dates = [];
+        var prices = [];
+        initTime = data[0].d;
+        initTime = parseInt(initTime.substring(1, initTime.length));
+        data[0].d = 0;
+
+        var timeChange = 0;
+        var prevNum;
+        //had to put a bunch of lines that are tough to read to handle the output
+        //in the event of a timechange....
+        for (var i = 0; i < data.length; i++){
+          current = data[i];
+
+          //handle time change
+          if (isNaN(parseInt(current.d)) && typeof data[i+1] !== 'undefined'){
+            if(isNaN(parseInt(data[i+1].d)))
+              {
+                initTime = data[i+1].d;
+                initTime = parseInt(initTime.substring(1, initTime.length));
+              }
+              continue;
+            }
+            //end handling of timechange
+          if (i===0){
+            time = 0
+          } else {
+            time = parseInt(current.d);
+            prevNum = time;
+          }
+          date = new Date((initTime + time*interval)*1000)
+          dates.push(date);
+          prices.push(current.c)
+        }
+        var stockData = {
+          x: dates,
+          y: prices,
+          type: 'scatter'
+        };
+
+        Plotly.newPlot('stockPrices', [stockData]);
+
+      }
+    });
+  }
+
+  render(){
     return (
       <div>
 
@@ -97,7 +177,7 @@ export default class Profile extends TrackerReact(React.Component){
           <li><a href = "javascript:void(0)" className = "tablinks" onClick={()=>this.openPage(event, 'profileAnalytics')}>Analytics</a></li>
         </ul>
 
-        <div id = "profileHome" className = "tabcontent container-fluid">
+        <div id = "profileHome" className = "tabcontent container">
           <div className = "row">
             <h2 className = "profileTitle">{this.state.user? this.state.user.emails[0].address : 'Loading'} Profile</h2>
           </div>
@@ -132,30 +212,29 @@ export default class Profile extends TrackerReact(React.Component){
           <a id = "closebtnId" href = "javascript:void(0)" className = "closebtn" onClick = {this.closeNav}>&times;</a>
           <h2>Your Stocks</h2>
           <ul id = "stockList">
-            <li>GOOG</li>
-            <li>TSLA</li>
-            <li>MSFT</li>
-            <li>DOWJ</li>
+            {this.state.user ?
+              this.stocks().map((stock) => {
+                return (<li onClick = {()=>this.displayGraph(stock.symbol)}>{stock.symbol}</li>)
+              }) : 'Loading'
+            }
           </ul>
           <h2>Tracked Stocks</h2>
           <ul id = "stockList">
-            <li>GOOG</li>
-            <li>TSLA</li>
             <li>MSFT</li>
-            <li>DOWJ</li>
-            <li>TSLA</li>
-            <li>MSFT</li>
-            <li>DOWJ</li>
+            <li>F</li>
+            <li>NTDOY</li>
           </ul>
         </div>
 
         <div id = "profileStocks" className = "tabcontent">
           <div id = "profileID" className = "profile">
-            <h1>Profile</h1>
+            <h1>{this.state.user? this.state.user.emails[0].address : 'Loading'} Stocks</h1>
             <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
-            <p>
-              some content about stuff, i dunno.
-            </p>
+
+            <h3>{this.state.stockPicked}</h3>
+
+            <div id = "stockPrices"></div>
+
           </div>
 
 
