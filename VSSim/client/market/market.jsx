@@ -27,7 +27,7 @@ export default class Market extends TrackerReact(React.Component){
     //TODO add error checking (search db of stock symbols for example)
     var symbol = $('[name=stockSymbol]').val();
     symbol = symbol.toUpperCase();
-    if (symbol.length != 4) {console.log("error with symbol");return;}
+
     this.setState({stockSymbol: symbol});
     //Grab the time interval from the user input.
     intervalObj = document.getElementById("interval");
@@ -50,8 +50,26 @@ export default class Market extends TrackerReact(React.Component){
         initTime = data[0].d;
         initTime = parseInt(initTime.substring(1, initTime.length));
         data[0].d = 0;
+
+        var timeChange = 0;
+        var prevNum;
+        //had to put a bunch of lines that are tough to read to handle the output
+        //in the event of a timechange....
+
         for (var i = 0; i < data.length; i++){
           current = data[i];
+
+          //handle time change
+          if (isNaN(parseInt(current.d)) && typeof data[i+1] !== 'undefined'){
+            if(isNaN(parseInt(data[i+1].d)))
+              {
+                initTime = data[i+1].d;
+                initTime = parseInt(initTime.substring(1, initTime.length));
+              }
+              continue;
+            }
+            //end handling of timechange
+
           if (i===0){
             time = 0
           } else {
@@ -101,7 +119,7 @@ export default class Market extends TrackerReact(React.Component){
           </p>
         </form>
 
-        <Purchase stockSymbol = {stockSymbol} user = {userN} />
+        {stockSymbol&&userN?<Purchase stockSymbol = {stockSymbol} user = {userN} /> : ""}
 
         <div id = "stockPrices"></div>
       </div>

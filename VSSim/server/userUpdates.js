@@ -60,40 +60,107 @@ Meteor.methods({
     console.log('Getting stock price');
     //if user exists add stock to tracked stocks
     var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
-
+    console.log(stockPrice);
     // validates stock symbol
     if (stockPrice){
-      console.log('stock price: '+ stockPrice);
-      if (stockPrice === 'error'){return 'error'}
+        console.log('stock price: '+ stockPrice);
+        if (stockPrice === 'error'){return 'error'}
 
-      var cashOnHandUpdate = user.cashOnHand;
-      var stocksOwned = user.stocksOwned;
+        var cashOnHandUpdate = user.cashOnHand;
+        var stocksOwned = user.stocksOwned;
 
-      var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
+        var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
 
-      cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
+        cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
 
-      if (cashOnHandUpdate < 0){
-        return "Not enough cash to purchase that many";
-      }
+        stocksOwned[stockSymbol] = {
+          count: currCount + change,
+          costAtPurchase: stockPrice,
+          currentValue: stockPrice
+        }
 
-      stocksOwned[stockSymbol] = {
-        count: currCount + change,
-        lastCost: stockPrice
-      }
+        if (cashOnHandUpdate < 0){
+          return "Not enough cash to purchase that many";
+        }
 
-      Meteor.users.update(
-          {_id: Meteor.user()._id},
-          { $set:
-          {
-            stocksOwned,
-            cashOnHand: cashOnHandUpdate
-          }
+        Meteor.users.update(
+            {_id: Meteor.user()._id},
+            { $set:
+            {
+              stocksOwned,
+              cashOnHand: cashOnHandUpdate
+            }
           }, function(error){
-            console.log(error);
+            if (error){
+              console.log(error);
+            }
           }
       );
       return "Successful purchase of " + change + " " + stockSymbol + " stocks";
     }
+  },
+
+  sellStock(input){
+
+        var stockSymbol = input[0];
+        console.log('change' + change);
+        var change = parseInt(input[1]);
+
+        if (change >= 0){console.error("Must be negative number"); return;}
+        console.log(stockSymbol, change);
+        if (isNaN(change)){
+          return;
+        }
+
+        var user = Meteor.user();
+        if(!user) {return;}
+        /*
+          Rough stock schema:
+          [{
+            stockSymbol : String
+            count : Integer
+            lastCost : Decimal
+            history: {
+              [
+                time: new Date()
+                priceWhenBought: Decimal
+                quantity: Integer
+              ]
+            }
+          }]
+
+        */
+        console.log('Getting stock price');
+        //if user exists add stock to tracked stocks
+        var stockPrice = Meteor.call('getCurrentStockPrice', [stockSymbol]);
+        console.log('stock price: '+ stockPrice);
+        if (stockPrice === 'error'){return 'error'}
+
+        var cashOnHandUpdate = user.cashOnHand;
+        var stocksOwned = user.stocksOwned;
+
+        var currCount = parseInt(stocksOwned[stockSymbol] == undefined? 0 : stocksOwned[stockSymbol].count);
+
+        cashOnHandUpdate = cashOnHandUpdate - change*stockPrice;
+
+        stocksOwned[stockSymbol] = {
+          count: currCount + change,
+          costAtPurchase: stocksOwned[stockSymbol].costAtPurchase,
+          currentValue: stockPrice
+        }
+
+        Meteor.users.update(
+            {_id: Meteor.user()._id},
+            { $set:
+              {
+                stocksOwned,
+                cashOnHand: cashOnHandUpdate
+              }
+            }, function(error){
+              console.log(error);
+            }
+        );
+        return "Successful sale of " + change + " " + stockSymbol + " stocks";
   }
+
 });

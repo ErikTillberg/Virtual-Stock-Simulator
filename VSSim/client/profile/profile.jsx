@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
+import Purchase from '../purchase/purchase.jsx';
+import Sell from '../sell/sell.jsx';
+
 export default class Profile extends TrackerReact(React.Component){
 
   constructor(){
@@ -41,10 +44,6 @@ export default class Profile extends TrackerReact(React.Component){
     document.getElementById(pageName).style.display = "block";
     evt.currentTarget.className += " active";
 
-    if (pageName === 'profileStocks'){
-       this.setState({stockPicked: this.firstStock()})
-    }
-
   }
 
   calculateStockValue(){
@@ -53,7 +52,7 @@ export default class Profile extends TrackerReact(React.Component){
     var stockVal = 0;
 
     for (var key in owned){
-      stockVal += owned[key].count*owned[key].lastCost;
+      stockVal += owned[key].count*owned[key].currentValue;
     }
 
     return stockVal;
@@ -85,7 +84,7 @@ export default class Profile extends TrackerReact(React.Component){
     var ret = [];
 
     for (var key in owned){
-      ret.push({symbol: key, count: owned[key].count, cost: owned[key].lastCost});
+      ret.push({symbol: key, count: owned[key].count, cost: owned[key].currentValue});
     }
     return ret;
   }
@@ -103,7 +102,9 @@ export default class Profile extends TrackerReact(React.Component){
   }
 
   displayGraph(symbolInput){
+
     this.setState({stockPicked: symbolInput});
+
     //Grab the stock symbol from the user input.
     //TODO add error checking (search db of stock symbols for example)
     if (symbolInput === ''){return;}
@@ -165,6 +166,15 @@ export default class Profile extends TrackerReact(React.Component){
 
       }
     });
+
+  }
+
+  stockPrice(){
+    if (this.state.stockPicked){
+      Meteor.call('getCurrentStockPrice', [this.state.stockPicked], function(error, result){
+        this.setState({stockPrice: result});
+      });
+    }
   }
 
   render(){
@@ -176,26 +186,17 @@ export default class Profile extends TrackerReact(React.Component){
           <li><a href = "javascript:void(0)" className = "tablinks" onClick={()=>this.openPage(event, 'profileStocks')}>Stocks</a></li>
           <li><a href = "javascript:void(0)" className = "tablinks" onClick={()=>this.openPage(event, 'profileAnalytics')}>Analytics</a></li>
         </ul>
-        
+
         <div id = "profileHome" className = "tabcontent container">
           <div className = "row">
-            <h2 className = "profileTitle">{this.state.user? this.state.user.username : 'Loading'} Profile</h2>
+            <h2 className = "profileTitle">{this.state.user? this.state.user.username : 'Loading'}&#8217;s Profile</h2>
           </div>
-          <div className = "profileInfo">
-            <div className="row">
-              <div className = "col-xs-2"><h4>Account Information</h4></div>
-              <div className = "col-xs-8">
-                <h4>User Name: {this.state.user? this.state.user.username : 'Loading'}</h4>
-                <h4>Email: {this.state.user? this.state.user.emails[0].address : 'Loading'}</h4>
-              </div>
-            </div>
-            <div className="row">
-              <div className = "col-xs-2"><h4>User Information</h4></div>
-              <div className = "col-xs-8">
-                <h4>Cash: {this.state.user? this.state.user.cashOnHand.toFixed(2) : 'Loading'}</h4>
-                <h4>Stock Value: {this.state.user? this.calculateStockValue().toFixed(2) : 'Loading'}</h4>
-                <h4>Networth: {this.state.user? this.calculateNetworth().toFixed(2) : 'Loading'}</h4>
-              </div>
+          <div className = "row profileInfo">
+            <div className = "col-xs-2"><h4>User Information</h4></div>
+            <div className = "col-xs-8">
+              <h4>Cash: {this.state.user? this.state.user.cashOnHand.toFixed(2) : 'Loading'}</h4>
+              <h4>Stock Value: {this.state.user? this.calculateStockValue().toFixed(2) : 'Loading'}</h4>
+              <h4>Networth: {this.state.user? this.calculateNetworth().toFixed(2) : 'Loading'}</h4>
             </div>
             <div className = "col-xs-2"></div>
           </div>
@@ -237,16 +238,18 @@ export default class Profile extends TrackerReact(React.Component){
 
         <div id = "profileStocks" className = "tabcontent">
           <div id = "profileID" className = "profile">
-            <h1>{this.state.user? this.state.user.emails[0].address : 'Loading'} Stocks</h1>
+            <h1>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h1>
             <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
 
             <h3>{this.state.stockPicked}</h3>
+            <h3>{this.state.stockPicked? ("Stock Price: " + this.state.user.stocksOwned[this.firstStock()].currentValue) : ""}</h3>
+
+            {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
+            {this.state.user&&this.state.stockPicked? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
 
             <div id = "stockPrices"></div>
 
           </div>
-
-
         </div>
 
         <div id = "profileAnalytics" className = "tabcontent">
@@ -257,7 +260,3 @@ export default class Profile extends TrackerReact(React.Component){
     )
   }
 }
-
-
-
-
