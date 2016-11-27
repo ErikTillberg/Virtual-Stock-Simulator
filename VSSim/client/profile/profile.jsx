@@ -177,6 +177,10 @@ export default class Profile extends TrackerReact(React.Component){
     }
   }
 
+  trackedStocks(){
+    return this.state.user.trackedStocks;
+  }
+
   render(){
     return (
       <div>
@@ -230,9 +234,11 @@ export default class Profile extends TrackerReact(React.Component){
           </ul>
           <h2>Tracked Stocks</h2>
           <ul id = "stockList">
-            <li>MSFT</li>
-            <li>F</li>
-            <li>NTDOY</li>
+            {this.state.user ?
+              this.trackedStocks().map((stock) => {
+                return (<li onClick = {()=>this.displayGraph(stock)}>{stock}</li>)
+              }) : 'Loading'
+            }
           </ul>
         </div>
 
@@ -243,10 +249,14 @@ export default class Profile extends TrackerReact(React.Component){
 
             <h3>{this.state.stockPicked}</h3>
             <h3>{this.state.stockPicked? ("Stock Price: " + this.state.user.stocksOwned[this.firstStock()].currentValue) : ""}</h3>
-
-            {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
-            {this.state.user&&this.state.stockPicked? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
-
+            <div className = "row">
+              <div className = "col-xs-6">
+                {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} currentValue = {Meteor.user().stocksOwned[this.state.stockPicked].currentValue} /> : ""}
+              </div>
+              <div className = "col-xs-6">
+                {this.state.user&&this.state.stockPicked? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
+              </div>
+            </div>
             <div id = "stockPrices"></div>
 
           </div>
