@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 
+import Purchase from '../purchase/purchase.jsx';
+import Sell from '../sell/sell.jsx';
+
 export default class Profile extends TrackerReact(React.Component){
 
   constructor(){
@@ -41,10 +44,6 @@ export default class Profile extends TrackerReact(React.Component){
     document.getElementById(pageName).style.display = "block";
     evt.currentTarget.className += " active";
 
-    if (pageName === 'profileStocks'){
-       this.setState({stockPicked: this.firstStock()})
-    }
-
   }
 
   calculateStockValue(){
@@ -53,7 +52,7 @@ export default class Profile extends TrackerReact(React.Component){
     var stockVal = 0;
 
     for (var key in owned){
-      stockVal += owned[key].count*owned[key].lastCost;
+      stockVal += owned[key].count*owned[key].currentValue;
     }
 
     return stockVal;
@@ -85,7 +84,7 @@ export default class Profile extends TrackerReact(React.Component){
     var ret = [];
 
     for (var key in owned){
-      ret.push({symbol: key, count: owned[key].count, cost: owned[key].lastCost});
+      ret.push({symbol: key, count: owned[key].count, cost: owned[key].currentValue});
     }
     return ret;
   }
@@ -103,7 +102,9 @@ export default class Profile extends TrackerReact(React.Component){
   }
 
   displayGraph(symbolInput){
+
     this.setState({stockPicked: symbolInput});
+
     //Grab the stock symbol from the user input.
     //TODO add error checking (search db of stock symbols for example)
     if (symbolInput === ''){return;}
@@ -165,6 +166,17 @@ export default class Profile extends TrackerReact(React.Component){
 
       }
     });
+
+    this.stockPrice();
+
+  }
+
+  stockPrice(){
+    if (this.state.stockPicked){
+      Meteor.call('getCurrentStockPrice', [this.state.stockPicked], function(error, result){
+        this.setState({stockPrice: result});
+      });
+    }
   }
 
   render(){
@@ -232,12 +244,14 @@ export default class Profile extends TrackerReact(React.Component){
             <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
 
             <h3>{this.state.stockPicked}</h3>
+            <h3>{this.state.stockPicked? ("Stock Price: " + this.state.user.stocksOwned[this.firstStock()].currentValue) : ""}</h3>
+
+            {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
+            {this.state.user&&this.state.stockPicked? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
 
             <div id = "stockPrices"></div>
 
           </div>
-
-
         </div>
 
         <div id = "profileAnalytics" className = "tabcontent">

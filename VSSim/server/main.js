@@ -10,6 +10,10 @@ Meteor.startup(() => {
   Meteor.publish(null, function() {
     return Meteor.users.find({_id: this.userId}, {fields: {stocksOwned: 1, cashOnHand: 1}});
   });
+  Meteor.call('updateStockValues');
+  Meteor.setInterval(function(){
+   Meteor.call('updateStockValues');
+  }, 1000*60);
 });
 
 //let's client call update methods on a user
@@ -83,7 +87,6 @@ Meteor.methods({
           console.log("Could not find stock information for " + symbol);
           myFuture.return('error');
         }
-        //parse out the return header and add our own much nicer one:
         myFuture.return(data[1]);
       });
     });

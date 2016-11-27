@@ -27,7 +27,7 @@ export default class Market extends TrackerReact(React.Component){
     //TODO add error checking (search db of stock symbols for example)
     var symbol = $('[name=stockSymbol]').val();
     symbol = symbol.toUpperCase();
-    if (symbol.length != 4) {console.log("error with symbol");return;}
+
     this.setState({stockSymbol: symbol});
     //Grab the time interval from the user input.
     intervalObj = document.getElementById("interval");
