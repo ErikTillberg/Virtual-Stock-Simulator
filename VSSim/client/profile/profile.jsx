@@ -9,6 +9,11 @@ export default class Profile extends TrackerReact(React.Component){
     this.state = {
       user: Meteor.user()
     }
+    var self = this;
+    //This is such bad code I'm embarassed but I can't figure out how to fix it.
+    setTimeout(function(){
+      self.setState({user:Meteor.user()});
+    }, 1000);
   }
 
   componentWillMount(){
@@ -92,7 +97,6 @@ export default class Profile extends TrackerReact(React.Component){
           <li><a href = "javascript:void(0)" className = "tablinks" onClick={()=>this.openPage(event, 'profileAnalytics')}>Analytics</a></li>
         </ul>
 
-
         <div id = "profileHome" className = "tabcontent container-fluid">
           <div className = "row">
             <h2 className = "profileTitle">{this.state.user? this.state.user.emails[0].address : 'Loading'} Profile</h2>
@@ -122,8 +126,6 @@ export default class Profile extends TrackerReact(React.Component){
             </div>
             <div className = "col-xs-2"></div>
           </div>
-
-
         </div>
 
         <div id = "stockPickerId" className = "stockPicker">
