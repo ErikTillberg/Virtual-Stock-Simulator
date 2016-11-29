@@ -25,19 +25,39 @@ Meteor.methods({
       var uStocks = currentUser.stocksOwned;
 
       //push to your history
+      if (uStocks != {}){
 
-      Meteor.users.update(
-        {_id: currentUser._id},
-        {$push:
-          {
-            history: uStocks
-          }
-        }, function(error){
-          if (error){
-            console.log(error);
-          }
+
+        //calc net Worth
+        var stockVal = 0;
+        for (var stock in uStocks){
+          stockVal += uStocks[stock].count * uStocks[stock].currentValue;
         }
-      )
+
+        uStocks.networth = stockVal + currentUser.cashOnHand;
+
+        uStocks.networth = parseInt(uStocks.networth.toFixed());
+
+        //add the time
+        uStocks.time_stamp = (new Date()).getTime();
+
+        Meteor.users.update(
+          {_id: currentUser._id},
+          {$push:
+            {
+              history: uStocks
+            }
+          }, function(error){
+            if (error){
+              console.log(error);
+            }
+          }
+        )
+        //this is probably the worst way to do this.
+        delete uStocks.time_stamp;
+        delete uStocks.networth;
+      }
+
 
       for (var symbol in uStocks){
         var visited = fetchFromVisited(symbol);

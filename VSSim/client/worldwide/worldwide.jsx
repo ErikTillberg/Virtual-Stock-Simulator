@@ -43,7 +43,7 @@ export default class Worldwide extends TrackerReact(React.Component){
           </tr>
           </thead>
           <tbody>
-          {this.state.user?
+          {this.state.user&&this.state.userlist?
               this.state.userlist.map((usr)=> {
                 return (
                     <tr>
