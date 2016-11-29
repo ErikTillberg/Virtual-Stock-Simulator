@@ -13,12 +13,23 @@ Meteor.methods({
     var user = Meteor.user();
 
     var tracked = user.trackedStocks;
+    if (tracked) {
+      if (!stockSymbol){console.error("Cannot track that"); return;}
 
-    if (!stockSymbol){console.error("Cannot track that"); return;}
+      if (tracked.indexOf(stockSymbol)>=0){
+        console.error("Already tracking that");
+        return;
+      }
+    }
 
-    if (tracked.indexOf(stockSymbol)>=0){
-      console.error("Already tracking that");
-      return;
+    if (user.trackedStocks == null){
+      Meteor.users.update(
+        {_id: user._id},
+        {$set: {
+          trackedStocks: []
+        }
+      }, function(error){if(error){console.log(error)}}
+      )
     }
 
     if (user){ //if user exists add stock to tracked stocks
@@ -74,10 +85,13 @@ Meteor.methods({
 
     var tracked = user.trackedStocks;
     //Remove the stock from tracked if it's in there.
-    var indexOfTracked = tracked.indexOf(stockSymbol);
-    if (indexOfTracked >= 0){
-      tracked.splice(indexOfTracked, 1);
+    if (tracked){
+      var indexOfTracked = tracked.indexOf(stockSymbol);
+      if (indexOfTracked >= 0){
+        tracked.splice(indexOfTracked, 1);
+      }
     }
+
 
     // validates stock symbol
     if (stockPrice){

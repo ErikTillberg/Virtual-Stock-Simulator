@@ -230,7 +230,7 @@ export default class Profile extends TrackerReact(React.Component){
           <a id = "closebtnId" href = "javascript:void(0)" className = "closebtn" onClick = {this.closeNav}>&times;</a>
           <h2>Your Stocks</h2>
           <ul id = "stockList">
-            {this.state.user ?
+            {this.state.user&&this.state.user.stocksOwned != {} ?
               this.stocks().map((stock) => {
                 return (<li onClick = {()=>this.displayGraph(stock.symbol)}>{stock.symbol}</li>)
               }) : 'Loading'
@@ -238,7 +238,7 @@ export default class Profile extends TrackerReact(React.Component){
           </ul>
           <h2>Tracked Stocks</h2>
           <ul id = "stockList">
-            {this.state.user ?
+            {this.state.user&&this.state.user.trackedStocks ?
               this.trackedStocks().map((stock) => {
                 return (<li onClick = {()=>this.displayGraph(stock)}>{stock}</li>)
               }) : 'Loading'
@@ -248,7 +248,7 @@ export default class Profile extends TrackerReact(React.Component){
 
         <div id = "profileStocks" className = "tabcontent">
           <div id = "profileID" className = "profile">
-            <h1>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h1>
+            <h2>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h2>
             <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
 
             <h3>{this.state.stockPicked}</h3>
@@ -267,7 +267,16 @@ export default class Profile extends TrackerReact(React.Component){
         </div>
 
         <div id = "profileAnalytics" className = "tabcontent">
-          <p>Analytics.</p>
+          <h2>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h2>
+
+          <h3>Net Worth Over Time</h3>
+
+          <div id = "networthTimeGraph"></div>
+
+          <h3>Stock Distribution</h3>
+
+          <div id = "distributionChart"></div>
+
         </div>
 
       </div>

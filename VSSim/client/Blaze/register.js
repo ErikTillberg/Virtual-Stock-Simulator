@@ -38,7 +38,8 @@ Template.loginRegisterButton.events({
                         $set:
                         {
                             'cashOnHand': 10000, //start with $10000 USD7
-                            'stocksOwned': {}
+                            'stocksOwned': {},
+                            'history': []
                         }
                     });
 

@@ -24,6 +24,21 @@ Meteor.methods({
 
       var uStocks = currentUser.stocksOwned;
 
+      //push to your history
+
+      Meteor.users.update(
+        {_id: currentUser._id},
+        {$push:
+          {
+            history: uStocks
+          }
+        }, function(error){
+          if (error){
+            console.log(error);
+          }
+        }
+      )
+
       for (var symbol in uStocks){
         var visited = fetchFromVisited(symbol);
         if (visited){ //if we already have the price for that stock
@@ -37,7 +52,7 @@ Meteor.methods({
               {_id: currentUser._id},
               { $set:
                 {
-                  uStocks
+                  stocksOwned: uStocks
                 }
               }, function(error){
 
