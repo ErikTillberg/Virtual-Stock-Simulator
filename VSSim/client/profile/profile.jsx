@@ -185,7 +185,77 @@ export default class Profile extends TrackerReact(React.Component){
     return this.state.user.trackedStocks;
   }
 
+  displayNetworthGraph(){
+
+    var hist = this.state.user.history;
+    if (document.getElementById('networthTimeGraph')){
+
+      if (!hist){ //there is no history
+        document.getElementById('networthTimeGraph').innerHTML = "No History to Display";
+      } else { //draw graph
+
+        var times = [];
+        var networths = [];
+
+        for (var i = 0 ;i < hist.length; i++){
+          times.push(parseInt(hist[i].time_stamp));
+          networths.push(hist[i].networth);
+
+        }
+
+        var networthData = {
+          x: times,
+          y: networths,
+          type: 'scatter'
+        };
+
+        Plotly.newPlot('networthTimeGraph', [networthData]);
+      }
+    }
+  }
+
+  displayDistributionChart(){
+    var stocks = this.state.user.stocksOwned;
+    if (document.getElementById('distributionChart')){
+      if (!stocks){
+        document.getElementById('distributionChart').innerHTML = "No Stock Information to Display";
+      } else {
+
+        var amounts = [];
+        var symbols = [];
+
+        for (var s in stocks){
+          amounts.push(stocks[s].count);
+          symbols.push(s);
+        }
+
+        var distData = {
+          values: amounts,
+          labels: symbols,
+          type: 'pie'
+        };
+
+        var layout = {
+          margin: {
+            b: 0,
+            t: 0,
+            l: 0,
+            r: 0,
+            pad: 0
+
+          }
+        }
+
+        Plotly.newPlot('distributionChart', [distData], layout);
+
+      }
+    }
+  }
+
   render(){
+
+    if(this.state.user){this.displayNetworthGraph();this.displayDistributionChart()}
+
     return (
       <div>
 
