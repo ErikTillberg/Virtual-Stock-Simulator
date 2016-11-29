@@ -47,18 +47,16 @@ Meteor.methods({
 
           //Fetch the price:
           var price = Meteor.call('getCurrentStockPrice', [symbol]);
-
           uStocks[symbol] = {
             count: uStocks[symbol].count,
             costAtPurchase: uStocks[symbol].costAtPurchase,
             currentValue: price
           }
-
           Meteor.users.update(
               {_id: currentUser._id},
               { $set:
                 {
-                  uStocks
+                  stocksOwned: uStocks
                 }
               }, function(error){
                 if (error){

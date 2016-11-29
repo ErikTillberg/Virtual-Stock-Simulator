@@ -114,7 +114,7 @@ export default class Profile extends TrackerReact(React.Component){
     interval = 3600*24
 
     numDays = 80
-
+    var self = this;
     //Meteor method call.
     Meteor.call('getStockHistoricalPrice', [symbol, interval, numDays], function(err, data){
       if (err){
@@ -162,6 +162,10 @@ export default class Profile extends TrackerReact(React.Component){
           type: 'scatter'
         };
 
+
+        console.log(prices[prices.length-1]);
+        self.setState({stockPrice: prices[prices.length-1]});
+
         Plotly.newPlot('stockPrices', [stockData]);
 
       }
@@ -172,7 +176,7 @@ export default class Profile extends TrackerReact(React.Component){
   stockPrice(){
     if (this.state.stockPicked){
       Meteor.call('getCurrentStockPrice', [this.state.stockPicked], function(error, result){
-        this.setState({stockPrice: result});
+        this.setState({'stockPrice': result});
       });
     }
   }
@@ -248,13 +252,13 @@ export default class Profile extends TrackerReact(React.Component){
             <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
 
             <h3>{this.state.stockPicked}</h3>
-            <h3>{this.state.stockPicked? ("Stock Price: " + this.state.user.stocksOwned[this.firstStock()].currentValue) : ""}</h3>
+            <h3>{this.state.stockPicked? ("Stock Price: " + (this.state.user.stocksOwned[this.state.stockPicked]? (this.state.user.stocksOwned[this.state.stockPicked].currentValue) : (this.state.stockPrice? this.state.stockPrice : "Loading"))) : ""}</h3>
             <div className = "row">
               <div className = "col-xs-6">
-                {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} currentValue = {Meteor.user().stocksOwned[this.state.stockPicked].currentValue} /> : ""}
+                {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} currentValue = {Meteor.user().stocksOwned[this.state.stockPicked]? Meteor.user().stocksOwned[this.state.stockPicked].currentValue : 5} /> : ""}
               </div>
               <div className = "col-xs-6">
-                {this.state.user&&this.state.stockPicked? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
+                {this.state.user&&this.state.stockPicked&&this.state.user.stocksOwned[this.state.stockPicked]? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}
               </div>
             </div>
             <div id = "stockPrices"></div>

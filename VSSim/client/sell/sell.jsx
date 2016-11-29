@@ -28,7 +28,7 @@ export default class Purchase extends TrackerReact(React.Component){
                 <h2>{this.props.stockSymbol} Count: {Meteor.user().stocksOwned[this.props.stockSymbol].count}</h2>
                 <h2>{this.props.stockSymbol} Value: {Meteor.user().stocksOwned[this.props.stockSymbol].currentValue}</h2>
                 <div className="sellForm">
-                    // Set the min number to however many stocks that user owns
+
                     <p><input id="saleCount" type="number" min={"-" + Meteor.user().stocksOwned[this.props.stockSymbol].count} max="-1" /></p>
                     <p><button data-dismiss = "modal" type = "submit" className = 'purchase-confirm btn' onClick = {this.sellStock.bind(this)}>Confirm Sale</button></p>
                 </div>
