@@ -21,7 +21,7 @@ Meteor.methods({
 
     for (var i = 0; i < users.length; i++){
       var currentUser = users[i];
-
+      if (currentUser.username == "my_mom"){continue;}
       var uStocks = currentUser.stocksOwned;
 
       //push to your history

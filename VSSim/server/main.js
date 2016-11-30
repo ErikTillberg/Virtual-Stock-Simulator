@@ -14,6 +14,61 @@ Meteor.startup(() => {
   Meteor.setInterval(function(){
    Meteor.call('updateStockValues');
   }, 1000*60);
+
+  //push dummy data to Erik_Tillberg
+/*Meteor.users.update(
+  {_id: user._id},
+  {$set: {
+    trackedStocks: []
+  }
+}, function(error){if(error){console.log(error)}}
+)
+*/
+// var fakeHist = [];
+//
+// var networth = 10000;
+//
+// for (var i = 0; i < 365; i++){
+//   networth += Math.floor(Math.random()*(100-(-80)) + (-80));
+//   fakeHist.push({
+//     "networth": networth,
+//     "time_stamp": (new Date()).getTime() + i*86400000
+//   });
+// }
+//
+// Meteor.users.update(
+//   {username: "my_mom"},
+//   {$push: {
+//     history: {$each: fakeHist}
+//   }}, function(e){
+//     if (e){console.log(e);}
+//   }
+// );
+//
+// Meteor.users.update(
+//   {username: "my_mom"},
+//   {$set: {
+//     stocksOwned: {
+//       "TSLA": {
+//         count: 204,
+//         currentValue: 205.36
+//       },
+//       "GOOG": {
+//         count: 29,
+//         currentValue: 804.31
+//       },
+//       "MSFT": {
+//         count: 78,
+//         currentValue: 98.32
+//       },
+//       "F":{
+//         count: 140,
+//         currentValue: 9.87
+//       }
+//     }
+//   }}
+// )
+
 });
 
 //let's client call update methods on a user

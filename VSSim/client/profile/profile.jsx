@@ -24,6 +24,7 @@ export default class Profile extends TrackerReact(React.Component){
   }
 
   componentDidMount(){
+    this.openPage(null, 'profileHome');
     this.setState({user: Meteor.user()});
   }
 
@@ -321,7 +322,7 @@ export default class Profile extends TrackerReact(React.Component){
           stockVal.push(stockValueIncrement);
 
         }
-
+  
         var networthData = {
           x: times,
           y: stockVal,
