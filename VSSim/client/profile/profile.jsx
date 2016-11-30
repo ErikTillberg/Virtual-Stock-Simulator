@@ -322,7 +322,7 @@ export default class Profile extends TrackerReact(React.Component){
           stockVal.push(stockValueIncrement);
 
         }
-  
+
         var networthData = {
           x: times,
           y: stockVal,
@@ -406,7 +406,7 @@ export default class Profile extends TrackerReact(React.Component){
             <h3>{this.state.stockPicked? ("Stock Price: " + (this.state.user.stocksOwned[this.state.stockPicked]? (this.state.user.stocksOwned[this.state.stockPicked].currentValue) : (this.state.stockPrice? this.state.stockPrice : "Loading"))) : ""}</h3>
             <div className = "row">
               <div className = "col-xs-6">
-                {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} currentValue = {Meteor.user().stocksOwned[this.state.stockPicked]? Meteor.user().stocksOwned[this.state.stockPicked].currentValue : 5} /> : ""}
+                {this.state.user&&this.state.stockPicked? <Purchase stockSymbol = {this.state.stockPicked} user = {this.state.user} currentValue = {Meteor.user().stocksOwned[this.state.stockPicked]? Meteor.user().stocksOwned[this.state.stockPicked].currentValue : this.state.stockPrice} /> : ""}
               </div>
               <div className = "col-xs-6">
                 {this.state.user&&this.state.stockPicked&&this.state.user.stocksOwned[this.state.stockPicked]? <Sell stockSymbol = {this.state.stockPicked} user = {this.state.user} /> : ""}

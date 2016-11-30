@@ -19,6 +19,7 @@ export default class Market extends TrackerReact(React.Component){
   displayGraph(e){
     e.preventDefault();
     console.log('looking up history ...');
+    this.setState({invalidSymbol: false});
     //There is currently a major problem in that the google finance api
     //only returns up to 67 work days of data. This only goes back to ~August,
     //will likely need to switch API's.
@@ -54,6 +55,11 @@ export default class Market extends TrackerReact(React.Component){
         var dates = [];
         var prices = [];
         initTime = data[0].d;
+        if (typeof initTime === 'undefined'){
+          console.error("Couldn't find stock symbol");
+          self.setState({invalidSymbol: true});
+          return;
+        }
         initTime = parseInt(initTime.substring(1, initTime.length));
         data[0].d = 0;
 
@@ -132,11 +138,11 @@ export default class Market extends TrackerReact(React.Component){
         </form>
 
         <div className = "row">
-
+          {this.state.invalidSymbol? <p className = "error msg">Could not find that stock symbol. Try again.</p> : ""}
           <div className = "col-xs-2"></div>
           <div className = "col-xs-8">
 
-            {stockSymbol&&userN?
+            {stockSymbol&&userN&&!this.state.invalidSymbol?
               <div className = "row">
                 <div className = "col-xs-4">
                   <Purchase className = "" stockSymbol = {stockSymbol} user = {userN} currentValue = {this.state.latestPrice}/>
@@ -150,12 +156,13 @@ export default class Market extends TrackerReact(React.Component){
               </div>
                : ""}
 
+
           </div>
           <div className = "col-xs-2"></div>
 
         </div>
 
-        <div id = "stockPrices"></div>
+        {!this.state.invalidSymbol? <div id = "stockPrices"></div> : ""}
       </div>
     )
   }

@@ -91,7 +91,7 @@ Meteor.methods({
       } else {
         myFuture.return('err');
       }
-    }, 1500)
+    }, 2500)
 
     var req = https.get({
       host: 'www.google.com',
