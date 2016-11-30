@@ -168,15 +168,12 @@ Meteor.methods({
   getAllUsers(){
     //rank, name, networth
     var users =  Meteor.users.find({}, {fields: {username:1, stocksOwned:1, cashOnHand: 1}}).fetch();
-    console.log(users);
 
     var ranking = [];
 
     // generate list of all users
     for (var i = 0; i < users.length; i++)
     {
-      console.log(users[i]);
-
       // stock value
       var stockVal = 0;
       for (var stock in users[i].stocksOwned){
@@ -188,6 +185,9 @@ Meteor.methods({
         networth: stockVal + users[i].cashOnHand
 
       };
+      if(typeof user.networth === 'undefined' || typeof user.username === 'undefined'){
+        continue;
+      }
       ranking.push(usr);
     }
 
