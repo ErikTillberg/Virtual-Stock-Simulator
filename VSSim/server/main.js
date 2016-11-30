@@ -13,7 +13,62 @@ Meteor.startup(() => {
   Meteor.call('updateStockValues');
   Meteor.setInterval(function(){
    Meteor.call('updateStockValues');
-  }, 1000*60);
+ }, 1000*3600);
+
+  //push dummy data to Erik_Tillberg
+/*Meteor.users.update(
+  {_id: user._id},
+  {$set: {
+    trackedStocks: []
+  }
+}, function(error){if(error){console.log(error)}}
+)
+*/
+// var fakeHist = [];
+//
+// var networth = 10000;
+//
+// for (var i = 0; i < 365; i++){
+//   networth += Math.floor(Math.random()*(100-(-80)) + (-80));
+//   fakeHist.push({
+//     "networth": networth,
+//     "time_stamp": (new Date()).getTime() + i*86400000
+//   });
+// }
+//
+// Meteor.users.update(
+//   {username: "my_mom"},
+//   {$push: {
+//     history: {$each: fakeHist}
+//   }}, function(e){
+//     if (e){console.log(e);}
+//   }
+// );
+//
+// Meteor.users.update(
+//   {username: "my_mom"},
+//   {$set: {
+//     stocksOwned: {
+//       "TSLA": {
+//         count: 204,
+//         currentValue: 205.36
+//       },
+//       "GOOG": {
+//         count: 29,
+//         currentValue: 804.31
+//       },
+//       "MSFT": {
+//         count: 78,
+//         currentValue: 98.32
+//       },
+//       "F":{
+//         count: 140,
+//         currentValue: 9.87
+//       }
+//     }
+//   }}
+// )
+
 });
 
 //let's client call update methods on a user
@@ -30,7 +85,15 @@ Meteor.methods({
     Future = Npm.require('fibers/future');
     var myFuture = new Future();
 
-    https.get({
+    setTimeout(function(){
+      if (myFuture.isResolved()){
+        return;
+      } else {
+        myFuture.return('err');
+      }
+    }, 2500)
+
+    var req = https.get({
       host: 'www.google.com',
       path: '/finance/getprices?q='+data[0]+'&i='+String(data[1])+'&p='+String(data[2])+'d&f=d,o,h,l,c,v'
     }, function(response){
@@ -47,19 +110,32 @@ Meteor.methods({
         data.unshift('d,o,h,l,c,v');
         data = data.join('\n');
         if (data === 'd,o,h,l,c,v'){
-          return "error";
+          if (!myFuture.isResolved()){
+            myFuture.return("error");
+          }
         }
-          //convert the csv to json :)
+          //convert the csv to json
           var converter = new Converter({});
           converter.fromString(data, function(err, result){
             if (err){
-              myFuture.return(err);
+              if (!myFuture.isResolved()){
+                myFuture.return(err);
+              }
             } else {
-              myFuture.return(result);
+              if (!myFuture.isResolved()){
+                myFuture.return(result);
+              }
             }
           });
       });
+      response.on('error', function(err){
+        console.log(err);
+        if (!myFuture.isResolved()){
+          myFuture.return(err);
+        }
+      });
     });
+
     return myFuture.wait();
   },
 
@@ -100,15 +176,12 @@ Meteor.methods({
   getAllUsers(){
     //rank, name, networth
     var users =  Meteor.users.find({}, {fields: {username:1, stocksOwned:1, cashOnHand: 1}}).fetch();
-    console.log(users);
 
     var ranking = [];
 
     // generate list of all users
     for (var i = 0; i < users.length; i++)
     {
-      console.log(users[i]);
-
       // stock value
       var stockVal = 0;
       for (var stock in users[i].stocksOwned){
@@ -120,7 +193,12 @@ Meteor.methods({
         networth: stockVal + users[i].cashOnHand
 
       };
+      // if(typeof usr.networth === 'undefined' || typeof usr.username === 'undefined'){
+      //   continue;
+      // }
+      if(!isNaN(usr.networth)){
       ranking.push(usr);
+    }
     }
 
     // apply ranking

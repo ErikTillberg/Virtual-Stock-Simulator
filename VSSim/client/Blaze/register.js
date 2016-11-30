@@ -9,6 +9,7 @@ Template.loginRegisterButton.events({
     Meteor.loginWithPassword(user, password, function(){
       if (Meteor.userId()){
         FlowRouter.go('/profile');
+      } else {
       }
     });
   },
@@ -56,5 +57,8 @@ Template.loginRegisterButton.events({
 Template.loginRegisterButton.helpers({
   'currentUser': function(){
     return Meteor.userId();
+  },
+  'loginError': function(){
+    return Session.get('loginErr');
   }
 })
