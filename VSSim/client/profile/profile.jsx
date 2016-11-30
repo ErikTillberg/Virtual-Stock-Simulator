@@ -51,8 +51,9 @@ export default class Profile extends TrackerReact(React.Component){
     if (pageName === 'profileAnalytics'){
       this.closeNav();
     }
-    evt.currentTarget.className += " active";
-
+    if (evt != null){
+      evt.currentTarget.className += " active";
+    }
   }
 
   calculateStockValue(){
