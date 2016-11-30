@@ -24,7 +24,6 @@ export default class Profile extends TrackerReact(React.Component){
   }
 
   componentDidMount(){
-    document.getElementById("defaultOpen").click();
     this.setState({user: Meteor.user()});
   }
 
@@ -42,6 +41,15 @@ export default class Profile extends TrackerReact(React.Component){
     }
 
     document.getElementById(pageName).style.display = "block";
+    if (pageName === 'profileHome'){
+      this.closeNav();
+    }
+    if (pageName === 'profileStocks'){
+      this.openNav();
+    }
+    if (pageName === 'profileAnalytics'){
+      this.closeNav();
+    }
     evt.currentTarget.className += " active";
 
   }
@@ -252,9 +260,81 @@ export default class Profile extends TrackerReact(React.Component){
     }
   }
 
+  displayValueDistributionChart(){
+    var stocks = this.state.user.stocksOwned;
+    if (document.getElementById('valueDistributionChart')){
+      if (!stocks){
+        document.getElementById('valueDistributionChart').innerHTML = "No Stock Information to Display";
+      } else {
+
+        var amounts = [];
+        var symbols = [];
+
+        for (var s in stocks){
+          amounts.push(stocks[s].count*stocks[s].currentValue);
+          symbols.push(s);
+        }
+
+        var distData = {
+          values: amounts,
+          labels: symbols,
+          type: 'pie'
+        };
+
+        var layout = {
+          margin: {
+            b: 0,
+            t: 0,
+            l: 0,
+            r: 0,
+            pad: 0
+
+          }
+        }
+
+        Plotly.newPlot('valueDistributionChart', [distData], layout);
+
+      }
+    }
+  }
+  displayStockValueOverTimeChart(){
+    var hist = this.state.user.history;
+    if (document.getElementById('stockValueOverTime')){
+
+      if (!hist){ //there is no history
+        document.getElementById('stockValueOverTime').innerHTML = "No History to Display";
+      } else { //draw graph
+
+        var times = [];
+        var stockVal = [];
+
+        for (var i = 0 ;i < hist.length; i++){
+          times.push(new Date(parseInt(hist[i].time_stamp)));
+
+          //calc net Worth
+          var stockValueIncrement = 0;
+          for (var stock in hist[i]){
+            if (stock == 'time_stamp' || stock == 'networth'){continue;}
+            stockValueIncrement += hist[i][stock].count * hist[i][stock].currentValue;
+          }
+
+          stockVal.push(stockValueIncrement);
+
+        }
+
+        var networthData = {
+          x: times,
+          y: stockVal,
+          type: 'scatter'
+        };
+
+        Plotly.newPlot('stockValueOverTime', [networthData]);
+      }
+    }
+  }
   render(){
 
-    if(this.state.user){this.displayNetworthGraph();this.displayDistributionChart()}
+    if(this.state.user){this.displayNetworthGraph();this.displayDistributionChart();this.displayValueDistributionChart();this.displayStockValueOverTimeChart();}
 
     return (
       <div>
@@ -319,7 +399,7 @@ export default class Profile extends TrackerReact(React.Component){
         <div id = "profileStocks" className = "tabcontent">
           <div id = "profileID" className = "profile">
             <h2>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h2>
-            <button className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
+            <button id = "chooseStockBtn" className = "btn" onClick = {this.openNav}><strong>Choose Stock</strong></button>
 
             <h3>{this.state.stockPicked}</h3>
             <h3>{this.state.stockPicked? ("Stock Price: " + (this.state.user.stocksOwned[this.state.stockPicked]? (this.state.user.stocksOwned[this.state.stockPicked].currentValue) : (this.state.stockPrice? this.state.stockPrice : "Loading"))) : ""}</h3>
@@ -337,18 +417,31 @@ export default class Profile extends TrackerReact(React.Component){
         </div>
 
         <div id = "profileAnalytics" className = "tabcontent">
-          <h2>{this.state.user? this.state.user.username : 'Loading'}&#8217;s Stocks</h2>
+          <div className = "container-fluid center">
+            <div className = "row">
+              <div className = "col-xs-12 col-md-6">
+                <h3>Net Worth Over Time</h3>
 
-          <h3>Net Worth Over Time</h3>
+                <div id = "networthTimeGraph"></div>
+              </div>
+              <div className = "col-xs-12 col-md-6">
+                <h3>Stock Distribution</h3>
 
-          <div id = "networthTimeGraph"></div>
-
-          <h3>Stock Distribution</h3>
-
-          <div id = "distributionChart"></div>
-
+                <div id = "distributionChart"></div>
+              </div>
+            </div>
+          <div className = "row center">
+            <div className = "col-xs-12 col-md-6">
+              <h2>Stock Value Distribution</h2>
+              <div className = "center" id = "valueDistributionChart"></div>
+            </div>
+            <div className = "col-xs-12 col-md-6">
+              <h2>Stock Value Over Time</h2>
+              <div id = "stockValueOverTime"></div>
+            </div>
+          </div>
+          </div>
         </div>
-
       </div>
     )
   }
