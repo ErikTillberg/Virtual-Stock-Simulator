@@ -18,7 +18,7 @@ export default class Market extends TrackerReact(React.Component){
 
   displayGraph(e){
     e.preventDefault();
-
+    console.log('looking up history ...');
     //There is currently a major problem in that the google finance api
     //only returns up to 67 work days of data. This only goes back to ~August,
     //will likely need to switch API's.
@@ -42,8 +42,12 @@ export default class Market extends TrackerReact(React.Component){
     //Meteor method call.
     Meteor.call('getStockHistoricalPrice', [symbol, interval, numDays], function(err, data){
       if (err){
-        console.error("Error getting stock info");
+        console.log("Error getting stock info");
       } else {
+        if (data == 'err'){
+          console.error("Error getting stock info");
+          return;
+        }
         //The returned data contains a unix time stamp for the first date,
         //and then an integer for each successive time (e.g. a510543535, 1, 2, 3 ...)
         //The following parses the data.
@@ -89,6 +93,7 @@ export default class Market extends TrackerReact(React.Component){
           y: prices,
           type: 'scatter'
         };
+
         Plotly.newPlot('stockPrices', [stockData]);
       }
     });
@@ -96,7 +101,6 @@ export default class Market extends TrackerReact(React.Component){
   }
 
   trackStock(symbol){
-    console.log('relinquishing control to server to track');
     Meteor.call('addStockAsTracked', [symbol]);
   }
 

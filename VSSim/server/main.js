@@ -30,7 +30,15 @@ Meteor.methods({
     Future = Npm.require('fibers/future');
     var myFuture = new Future();
 
-    https.get({
+    setTimeout(function(){
+      if (myFuture.isResolved()){
+        return;
+      } else {
+        myFuture.return('err');
+      }
+    }, 1500)
+
+    var req = https.get({
       host: 'www.google.com',
       path: '/finance/getprices?q='+data[0]+'&i='+String(data[1])+'&p='+String(data[2])+'d&f=d,o,h,l,c,v'
     }, function(response){
@@ -49,7 +57,7 @@ Meteor.methods({
         if (data === 'd,o,h,l,c,v'){
           return "error";
         }
-          //convert the csv to json :)
+          //convert the csv to json
           var converter = new Converter({});
           converter.fromString(data, function(err, result){
             if (err){
@@ -59,7 +67,12 @@ Meteor.methods({
             }
           });
       });
+      response.on('error', function(err){
+        console.log(err);
+        myFuture.return(err);
+      });
     });
+    myFuture.set
     return myFuture.wait();
   },
 

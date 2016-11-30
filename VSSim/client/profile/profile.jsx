@@ -198,7 +198,7 @@ export default class Profile extends TrackerReact(React.Component){
         var networths = [];
 
         for (var i = 0 ;i < hist.length; i++){
-          times.push(parseInt(hist[i].time_stamp));
+          times.push(new Date(parseInt(hist[i].time_stamp)));
           networths.push(hist[i].networth);
 
         }
