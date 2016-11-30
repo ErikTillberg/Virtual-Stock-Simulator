@@ -13,7 +13,7 @@ Meteor.startup(() => {
   Meteor.call('updateStockValues');
   Meteor.setInterval(function(){
    Meteor.call('updateStockValues');
-  }, 1000*60);
+ }, 1000*3600);
 
   //push dummy data to Erik_Tillberg
 /*Meteor.users.update(
@@ -185,9 +185,9 @@ Meteor.methods({
         networth: stockVal + users[i].cashOnHand
 
       };
-      if(typeof user.networth === 'undefined' || typeof user.username === 'undefined'){
-        continue;
-      }
+      // if(typeof usr.networth === 'undefined' || typeof usr.username === 'undefined'){
+      //   continue;
+      // }
       ranking.push(usr);
     }
 
