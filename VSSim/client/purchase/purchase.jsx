@@ -26,7 +26,7 @@ export default class Purchase extends TrackerReact(React.Component){
                 <h3>Cash on Hand: ${Meteor.user().cashOnHand.toFixed(2)}</h3>
                 <h3>{this.props.stockSymbol} Cost: ${this.props.currentValue}</h3>
                 <div className="purchaseForm">
-                    <p><input id="intNumber" type="number" min="1" max="20" /></p>
+                    <p><input id="intNumber" type="number" min="1" max="1000" /></p>
                     <p><button data-dismiss = "modal" type = "submit" className = 'purchase-confirm btn' onClick = {this.purchaseStock.bind(this)}>Confirm Purchase</button></p>
                 </div>
               </div>

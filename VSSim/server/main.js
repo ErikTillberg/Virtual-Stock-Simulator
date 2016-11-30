@@ -110,24 +110,32 @@ Meteor.methods({
         data.unshift('d,o,h,l,c,v');
         data = data.join('\n');
         if (data === 'd,o,h,l,c,v'){
-          return "error";
+          if (!myFuture.isResolved()){
+            myFuture.return("error");
+          }
         }
           //convert the csv to json
           var converter = new Converter({});
           converter.fromString(data, function(err, result){
             if (err){
-              myFuture.return(err);
+              if (!myFuture.isResolved()){
+                myFuture.return(err);
+              }
             } else {
-              myFuture.return(result);
+              if (!myFuture.isResolved()){
+                myFuture.return(result);
+              }
             }
           });
       });
       response.on('error', function(err){
         console.log(err);
-        myFuture.return(err);
+        if (!myFuture.isResolved()){
+          myFuture.return(err);
+        }
       });
     });
-    myFuture.set
+
     return myFuture.wait();
   },
 
@@ -188,7 +196,9 @@ Meteor.methods({
       // if(typeof usr.networth === 'undefined' || typeof usr.username === 'undefined'){
       //   continue;
       // }
+      if(!isNaN(usr.networth)){
       ranking.push(usr);
+    }
     }
 
     // apply ranking

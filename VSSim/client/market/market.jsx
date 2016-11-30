@@ -123,7 +123,7 @@ export default class Market extends TrackerReact(React.Component){
             </select>
             <select id = "interval">
               <optgroup label="Time Interval">
-                <option value='3600'>Hourly</option>
+                // <option value='3600'>Hourly</option>
                 <option value='86400'>Daily</option>
                 <option value='604800'>Weekly</option>
               </optgroup>
